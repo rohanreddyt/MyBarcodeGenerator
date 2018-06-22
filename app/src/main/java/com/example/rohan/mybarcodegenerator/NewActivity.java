@@ -48,7 +48,7 @@ public class NewActivity extends AppCompatActivity {
 
         // Initialize and set license
         try {
-            String key = "08waXphTjJacbQLDQ9Fuk4CRW8BLLjEI69383qJp4DPqoMXYamPE1yuYknqpCmFEP5zAcu6aYiTXpOZGouGdl08jGqEnn0zu";
+            String key = "your key here which can be found in .key file";
             RasterSupport.setLicense(this, getResources().openRawResource(R.raw.eval_license_files), key);
         } catch (Exception ex) {
             ex.printStackTrace();
