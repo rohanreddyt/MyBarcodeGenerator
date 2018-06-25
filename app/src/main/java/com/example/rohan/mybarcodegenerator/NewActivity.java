@@ -1,12 +1,15 @@
 package com.example.rohan.mybarcodegenerator;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import leadtools.LTLibrary;
+import leadtools.LeadRect;
 import leadtools.Platform;
 import leadtools.RasterColor;
 import leadtools.RasterImage;
@@ -20,6 +23,8 @@ import leadtools.barcode.OneDBarcodeWriteOptions;
 import leadtools.controls.ImageViewerNewImageResetOptions;
 import leadtools.controls.ImageViewerSizeMode;
 import leadtools.controls.RasterImageViewer;
+import leadtools.converters.ConvertFromImageOptions;
+import leadtools.converters.RasterImageConverter;
 
 public class NewActivity extends AppCompatActivity {
 
@@ -61,18 +66,27 @@ public class NewActivity extends AppCompatActivity {
         }
 
         BarcodeEngine mBarcodeEngine = new BarcodeEngine();
+
         BarcodeWriter writer = mBarcodeEngine.getWriter();
-        mImageViewer = (RasterImageViewer) findViewById(R.id.imageviewer);
-        mImageViewer.setNewImageResetOptions(ImageViewerNewImageResetOptions.NONE.getValue());
-        mImageViewer.setSizeMode(ImageViewerSizeMode.FIT_WIDTH);
-        RasterImage image = RasterImage.create(565, 75, 32, 0, RasterColor.fromArgb(0));
         BarcodeData data = BarcodeData.createDefaultBarcodeData(BarcodeSymbology.GS1_DATA_BAR_EXPANDED);
+        String text = "960000987654321123121212121212";
+        data.setValue(text);
+        ImageView myImage = ((ImageView)findViewById(R.id.myImage));
         OneDBarcodeWriteOptions options = (OneDBarcodeWriteOptions) mBarcodeEngine.getWriter().getDefaultOptions(BarcodeSymbology.GS1_DATA_BAR_EXPANDED);
         options.setTextPosition(BarcodeOutputTextPosition.NONE);
-        String text = "960011111111111111121212121212";
-        data.setValue(text);
+        options.setUseXModule(true);
+        options.setXModule(1);
+
+//        mImageViewer = (RasterImageViewer) findViewById(R.id.imageviewer);
+//        mImageViewer.setNewImageResetOptions(ImageViewerNewImageResetOptions.NONE.getValue());
+        data.setBounds(LeadRect.create(0,0,565 ,100));
+        RasterImage image = RasterImage.create(data.getBounds().getWidth(), data.getBounds().getHeight(), 1, 0, RasterColor.fromArgb(0));
+
+
         writer.writeBarcode(image, data, options);
         ((TextView)findViewById(R.id.sample_text)).setText(text);
-        mImageViewer.setImage(image);
+        Bitmap bmp =RasterImageConverter.convertToBitmap(image, null);
+        myImage.setImageBitmap(bmp);
+//        mImageViewer.setImage(image);
     }
 }
